@@ -10,3 +10,7 @@ class NoteSchema(Schema):
     title = fields.Str(required=True, validate=validate.Length(min=1))
     content = fields.Str(required=True)
     user_id = fields.Int(dump_only=True)
+
+user_schema = UserSchema()
+note_schema = NoteSchema()
+notes_schema = NoteSchema(many=True)
