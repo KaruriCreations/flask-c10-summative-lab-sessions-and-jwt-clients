@@ -15,3 +15,11 @@ db.init_app(app)
 bcrypt.init_app(app)
 migrate = Migrate(app, db)
 api = Api(app)
+
+#fucntion to fetch currently logged in user
+def get_current_user():
+    user_id = session.get('user_id')
+    if user_id:
+        return User.query.get(user_id)
+    return None
+
