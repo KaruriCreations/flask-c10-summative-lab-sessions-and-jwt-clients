@@ -83,3 +83,31 @@ class NotesList(Resource):
         notes_pagination = Note.query.filter_by(user_id=user.id).paginate(
             page=page, per_page=per_page, error_out=False
         )
+        return {
+            'notes': notes_schema.dump(notes_pagination.items),
+            'total': notes_pagination.total,
+            'page': notes_pagination.page,
+            'pages': notes_pagination.pages
+        }, 200
+
+    def post(self):
+        user = get_current_user()
+        if not user:
+            return {'error': 'Unauthorized'}, 401
+
+        data = request.get_json()
+        errors = note_schema.validate(data)
+        if errors:
+            return errors, 400
+        
+        #create a new note instance
+        note = Note(
+            title = data['title'],
+            content = data['content'],
+            user_id = user.id
+        )
+
+        db.session.add(note)
+        db.session.commit()
+
+        return note_schema.dump(note), 201
