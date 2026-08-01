@@ -10,7 +10,12 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, UNIQUE=True, nullable=False)
-    email = db.Column(db.String, UNIQUE=True, nullable=False)
     _password_hash = db.Column(db.String, nullable=False)
+
+    #relationship to note model
+    notes = db.relationship('Note', backref='user', cascade='all, delete-orphan')
+
+    
+
 
     
