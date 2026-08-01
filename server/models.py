@@ -22,8 +22,13 @@ class User(db.Model):
     @password_hash_setter  #using a setter to hash the password before storing it in the database
     def pasword_hash(self, password):
         self._password_hash = bcrypt.generate_password_hash(
-            password.encode('utf-8'
+            password.encode('utf-8')
         ).decode('utf-8')
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+
+    
     
 
         
