@@ -19,7 +19,7 @@ class User(db.Model):
     def password_hash(self):
         raise AttributeError("Password cannot be accessed directly")
     
-    @password_hash_setter  #using a setter to hash the password before storing it in the database
+    @password_hash.setter  #using a setter to hash the password before storing it in the database
     def pasword_hash(self, password):
         self._password_hash = bcrypt.generate_password_hash(
             password.encode('utf-8')
@@ -29,7 +29,14 @@ class User(db.Model):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
 
     
-    
+class Note(db.Model):
+    __tablename__ = "notes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+    content = db.Column(db.String, nullable=False)
+    #foreign key for the relationship between user and note
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
         
 
