@@ -15,7 +15,18 @@ class User(db.Model):
     #relationship to note model
     notes = db.relationship('Note', backref='user', cascade='all, delete-orphan')
 
+    @property  #using a property getter to make it seem like _password_hash is a string
+    def password_hash(self):
+        raise AttributeError("Password cannot be accessed directly")
     
+    @password_hash_setter  #using a setter to hash the password before storing it in the database
+    def pasword_hash(self, password):
+        self._password_hash = bcrypt.generate_password_hash(
+            password.encode('utf-8'
+        ).decode('utf-8')
+    
+
+        
 
 
     
