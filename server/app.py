@@ -32,8 +32,33 @@ class Signup(Resource):
             return errors, 400
         if User.query.filter_by(username=data['username']).first():
             return {'error': 'Username already exists'}, 400
-        user = User(username=data['username'], password=data['password'])
+        #create a new user instance
+        user = User(username=data['username'])
+        #set the password using the setter method
+        user.password_hash = data['password']
+        #add the user to the database
         db.session.add(user)
+        #commit the user to the database
         db.session.commit()
         session['user_id'] = user.id
         return user_schema.dump(user), 201
+
+class Login(Resource):
+    def post(self):
+        data = request.get_json()
+        errors = user_schema.validate(data)
+        if errors:
+            return errors, 400
+        user = User.query.filter_by(username=data['username']).first()
+        #authenticate the user using the authenticate method in the User model
+        if user and user.authenticate(data['password']):
+            session['user_id'] = user.id
+            return user_schema.dump(user), 200
+        return {'error': 'Invalid credentials'}, 401
+
+class Logout(Resource):
+    def post(self):
+        session.pop('user_id', None)
+        return {'message': 'Logged out successfully'}, 200
+
+#note endpoints with auth
