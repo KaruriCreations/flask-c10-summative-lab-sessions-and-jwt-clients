@@ -62,3 +62,9 @@ class Logout(Resource):
         return {'message': 'Logged out successfully'}, 200
 
 #note endpoints with auth
+class Checksession(Resource):
+    def get(self):
+        user = get_current_user()
+        if user:
+            return user_schema.dump(user), 200
+        return {'error': 'Unauthorized'}, 401
