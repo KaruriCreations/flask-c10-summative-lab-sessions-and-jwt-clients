@@ -68,3 +68,18 @@ class Checksession(Resource):
         if user:
             return user_schema.dump(user), 200
         return {'error': 'Unauthorized'}, 401
+
+#NOTES endpoints
+class NotesList(Resource):
+    def get(self):
+        user = get_current_user()
+        if not user:
+            return {'error': 'Unauthorized'}, 401
+        
+        #pagination logic that is required
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 5, type=int)
+
+        notes_pagination = Note.query.filter_by(user_id=user.id).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
