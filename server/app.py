@@ -57,9 +57,11 @@ class Login(Resource):
         return {'error': 'Invalid credentials'}, 401
 
 class Logout(Resource):
-    def post(self):
-        session.pop('user_id', None)
-        return {'message': 'Logged out successfully'}, 200
+    def delete(self):
+        if session.get('user_id'):
+            session.pop('user_id', None)
+            return {}, 204
+        return {'error': 'Unauthorized'}, 401
 
 #note endpoints with auth
 class Checksession(Resource):
@@ -112,9 +114,12 @@ class NotesList(Resource):
 
         return note_schema.dump(note), 201
 
-class Note(Resource):
+class NoteResource(Resource):
     #update note
     def patch(self, id):
+        user = get_current_user()
+        if not user:
+            return {'error': 'Unauthorized'}, 401
         note = Note.query.get(id)
         if not note:
             return {'error': 'Note not found'}, 404
@@ -152,7 +157,7 @@ api.add_resource(Logout, '/logout')
 api.add_resource(Checksession, '/check_session')
 
 api.add_resource(NotesList, '/notes')
-api.add_resource(Note, '/notes/<int:id>')
+api.add_resource(NoteResource, '/notes/<int:id>')
 
 
 if __name__ == '__main__':
