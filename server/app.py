@@ -129,3 +129,13 @@ class Note(Resource):
 
         db.session.commit()
         return note_schema.dump(note), 200
+
+    def delete(self, id):
+        note = Note.query.get(id)
+        if not note:
+            return {'error': 'Note not found'}, 404
+        if note.user_id != user.id:
+            return {'error': 'Forbidden: You do not own this note'}, 403
+        db.session.delete(note)
+        db.session.commit()
+        return {'message': 'Note deleted successfully'}, 200
