@@ -155,3 +155,5 @@ api.add_resource(NotesList, '/notes')
 api.add_resource(Note, '/notes/<int:id>')
 
 
+if __name__ == '__main__':
+    app.run(port=5555, debug=True)
