@@ -142,3 +142,16 @@ class Note(Resource):
         db.session.delete(note)
         db.session.commit()
         return {'message': 'Note deleted successfully'}, 200
+
+
+
+#registering my API routes
+api.add_resource(Signup, '/signup')
+api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
+api.add_resource(Checksession, '/check_session')
+
+api.add_resource(NotesList, '/notes')
+api.add_resource(Note, '/notes/<int:id>')
+
+
