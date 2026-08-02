@@ -5,3 +5,7 @@ with app.app_context():
     print("Deleting old data...")
     Note.query.delete()
     User.query.delete()
+
+    print("Creating test users...")
+    user1 = User(username="alice", password_hash="password123")
+    user2 = User(username="bob", password_hash="password123")
