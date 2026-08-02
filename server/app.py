@@ -111,3 +111,21 @@ class NotesList(Resource):
         db.session.commit()
 
         return note_schema.dump(note), 201
+
+class Note(Resource):
+    #update note
+    def patch(self, id):
+        note = Note.query.get(id)
+        if not note:
+            return {'error': 'Note not found'}, 404
+        if note.user_id != user.id:
+            return {'error': 'Forbidden: You do not own this note'}, 403
+
+        json_data = request.get_json()
+        if 'title' in json_data:
+            note.title = json_data['title']
+        if 'content' in json_data:
+            note.content = json_data['content']
+
+        db.session.commit()
+        return note_schema.dump(note), 200
