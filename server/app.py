@@ -130,7 +130,10 @@ class Note(Resource):
         db.session.commit()
         return note_schema.dump(note), 200
 
-    def delete(self, id):
+    def delete(self, id):#delete note
+        user = get_current_user()
+        if not user:
+            return {'error': 'Unauthorized'}, 401
         note = Note.query.get(id)
         if not note:
             return {'error': 'Note not found'}, 404
